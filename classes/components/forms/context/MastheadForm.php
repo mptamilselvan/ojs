@@ -17,13 +17,18 @@ namespace APP\components\forms\context;
 
 use PKP\components\forms\context\PKPMastheadForm;
 use PKP\components\forms\FieldText;
+use PKP\components\forms\FieldUpload;
 
 class MastheadForm extends PKPMastheadForm
 {
     /**
-     * @copydoc PKPMastheadForm::__construct()
+     * @param string $action URL to submit the form to
+     * @param array $locales Supported locales
+     * @param \PKP\context\Context $context Journal or Press to change settings for
+     * @param string $imageUploadUrl The API endpoint for images uploaded through the rich text field
+     * @param string $temporaryFileApiUrl URL to upload temporary files (PDF masthead)
      */
-    public function __construct($action, $locales, $context, $imageUploadUrl)
+    public function __construct($action, $locales, $context, $imageUploadUrl, $temporaryFileApiUrl)
     {
         parent::__construct($action, $locales, $context, $imageUploadUrl);
 
@@ -33,6 +38,16 @@ class MastheadForm extends PKPMastheadForm
             'groupId' => 'identity',
             'value' => $context->getData('abbreviation'),
         ]))
+            ->addField(new FieldUpload('mastheadPdfUrl', [
+                'label' => __('manager.setup.mastheadPdfUrl'),
+                'description' => __('manager.setup.mastheadPdfUrl.description'),
+                'groupId' => 'publishing',
+                'value' => self::mastheadPdfFormValue($context->getData('mastheadPdfUrl')),
+                'options' => [
+                    'url' => $temporaryFileApiUrl,
+                    'acceptedFiles' => 'application/pdf,.pdf',
+                ],
+            ]))
             ->addField(new FieldText('publisherInstitution', [
                 'label' => __('manager.setup.publisher'),
                 'groupId' => 'publishing',
@@ -55,5 +70,24 @@ class MastheadForm extends PKPMastheadForm
                 'groupId' => 'publishing',
                 'value' => $context->getData('printIssn'),
             ]));
+    }
+
+    /**
+     * Normalize legacy string paths for the upload field component.
+     *
+     * @param mixed $raw Value from context settings
+     *
+     * @return mixed
+     */
+    protected static function mastheadPdfFormValue($raw)
+    {
+        if (is_string($raw) && $raw !== '') {
+            return [
+                'name' => basename($raw),
+                'uploadName' => $raw,
+            ];
+        }
+
+        return $raw;
     }
 }

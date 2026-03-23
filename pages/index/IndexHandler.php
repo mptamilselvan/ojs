@@ -67,11 +67,20 @@ class IndexHandler extends PKPIndexHandler
         $this->_setupAnnouncements($journal ?? $request->getSite(), $templateMgr);
         if ($journal) {
             // Assign header and content for home page
+            $mastheadPdf = $journal->getData('mastheadPdfUrl');
+            $mastheadPdfPath = '';
+            if ($mastheadPdf) {
+                $mastheadPdfPath = is_array($mastheadPdf)
+                    ? (string) ($mastheadPdf['uploadName'] ?? '')
+                    : (string) $mastheadPdf;
+            }
+
             $templateMgr->assign([
                 'additionalHomeContent' => $journal->getLocalizedData('additionalHomeContent'),
                 'homepageImage' => $journal->getLocalizedData('homepageImage'),
                 'homepageImageAltText' => $journal->getLocalizedData('homepageImageAltText'),
                 'journalDescription' => $journal->getLocalizedData('description'),
+                'mastheadPdfPath' => $mastheadPdfPath,
             ]);
 
             $issue = Repo::issue()->getCurrent($journal->getId(), true);

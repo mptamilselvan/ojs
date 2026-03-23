@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PDF Viewer</title>
+  <style>
+    :root {
+      --footer-height: 64px;
+      --bg: #0f172a;
+      --panel: #111827;
+      --text: #e5e7eb;
+      --muted: #9ca3af;
+      --accent: #3b82f6;
+    }
+
+    html, body {
+      height: 100%;
+      margin: 0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+    }
+
+    #viewer {
+      width: 100%;
+      height: calc(100vh - var(--footer-height));
+      border: 0;
+      background: #fff;
+      display: block;
+    }
+
+    .footer {
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: var(--footer-height);
+      box-sizing: border-box;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      padding: 0 16px;
+      border-top: 1px solid rgba(156, 163, 175, 0.25);
+      background: var(--panel);
+    }
+
+    .file-name {
+      max-width: min(55vw, 700px);
+      color: var(--muted);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .btn {
+      text-decoration: none;
+      color: #07111f;
+      background: var(--accent);
+      border-radius: 8px;
+      padding: 10px 14px;
+      font-weight: 600;
+    }
+
+    .error {
+      margin: 24px;
+      padding: 16px;
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      color: #fecaca;
+    }
+  </style>
+</head>
+<body>
+  <div id="error" class="error" style="display:none;"></div>
+  <iframe id="viewer" title="PDF document"></iframe>
+  <div class="footer">
+    <span id="fileName" class="file-name"></span>
+    <a id="downloadLink" class="btn" href="#" download>Download</a>
+  </div>
+
+  <script>
+    (function () {
+      var params = new URLSearchParams(window.location.search);
+      var file = params.get("file");
+      var errorEl = document.getElementById("error");
+      var viewer = document.getElementById("viewer");
+      var downloadLink = document.getElementById("downloadLink");
+      var fileNameEl = document.getElementById("fileName");
+
+      function showError(message) {
+        viewer.style.display = "none";
+        errorEl.style.display = "block";
+        errorEl.textContent = message;
+        downloadLink.style.pointerEvents = "none";
+        downloadLink.style.opacity = "0.6";
+      }
+
+      if (!file) {
+        showError("Missing file name.");
+        return;
+      }
+
+      var decoded = decodeURIComponent(file).trim();
+      var normalized = decoded.replace(/\\/g, "/").replace(/^\/+/, "");
+
+      // Allow nested folders inside files/pdf, but block traversal and URLs.
+      if (
+        !normalized ||
+        /^(?:[a-z]+:)?\/\//i.test(normalized) ||
+        normalized.includes("..") ||
+        !/\.pdf$/i.test(normalized)
+      ) {
+        showError("Invalid PDF file path.");
+        return;
+      }
+
+      var encodedPath = normalized
+        .split("/")
+        .map(function (segment) {
+          return encodeURIComponent(segment);
+        })
+        .join("/");
+      var pdfPath = "files/pdf/" + encodedPath;
+      var displayName = normalized.split("/").pop() || normalized;
+
+      viewer.src = pdfPath;
+      downloadLink.href = pdfPath;
+      fileNameEl.textContent = normalized;
+      document.title = displayName;
+    })();
+  </script>
+</body>
+</html>

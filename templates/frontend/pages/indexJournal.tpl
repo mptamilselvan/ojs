@@ -28,6 +28,15 @@
 		</div>
 	{/if}
 
+	{if $mastheadPdfPath}
+		<section class="homepage_about">
+			<h2>{translate key="manager.setup.mastheadPdfUrl"}</h2>
+			<a href="{$baseUrl}/pdf-viewer.html?file={$mastheadPdfPath|escape:'url'}" target="_blank" rel="noopener">
+				{$mastheadPdfPath|escape}
+			</a>
+		</section>
+	{/if}
+
 	{* Journal Description *}
 	{if $activeTheme->getOption('showDescriptionInJournalIndex')}
 		<section class="homepage_about">
@@ -61,6 +70,15 @@
 		<div class="additional_content">
 			{$additionalHomeContent}
 		</div>
+	{/if}
+
+	{if $mastheadPdfPath}
+		<section class="homepage_about">
+			<h2>{translate key="manager.setup.mastheadPdfUrl"}</h2>
+			<a href="{$baseUrl}/pdf-viewer.html?file={$mastheadPdfPath|escape:'url'}" target="_blank" rel="noopener">
+				{$mastheadPdfPath|escape}
+			</a>
+		</section>
 	{/if}
 </div><!-- .page -->
 

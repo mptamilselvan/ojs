@@ -1563,6 +1563,6 @@
             "install-path": "../symfony/polyfill-mbstring"
         }
     ],
-    "dev": false,
+    "dev": true,
     "dev-package-names": []
 }

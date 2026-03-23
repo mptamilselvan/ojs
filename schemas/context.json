@@ -50,7 +50,9 @@
 					"in:publication,representation,issue"
 				]
 			},
-		  	"default": ["publication"]
+			"default": [
+				"publication"
+			]
 		},
 		"doiCreationTime": {
 			"type": "string",
@@ -250,6 +252,30 @@
 				"url"
 			]
 		},
+		"mastheadPdfUrl": {
+			"type": "object",
+			"validation": [
+				"nullable"
+			],
+			"properties": {
+				"temporaryFileId": {
+					"type": "integer",
+					"writeOnly": true
+				},
+				"name": {
+					"type": "string"
+				},
+				"uploadName": {
+					"type": "string"
+				},
+				"dateUploaded": {
+					"type": "string",
+					"validation": [
+						"date_format:Y-m-d H:i:s"
+					]
+				}
+			}
+		},
 		"publishingMode": {
 			"type": "integer",
 			"validation": [
@@ -367,9 +393,9 @@
 			]
 		},
 		"doiVersioning": {
-		  	"type": "boolean",
-		  	"default": false,
-		  	"description": "Whether each publication version should receive a unique DOI"
+			"type": "boolean",
+			"default": false,
+			"description": "Whether each publication version should receive a unique DOI"
 		}
 	}
 }

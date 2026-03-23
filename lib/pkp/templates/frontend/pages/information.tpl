@@ -19,6 +19,15 @@
 	</h1>
 	{include file="frontend/components/editLink.tpl" page="management" op="settings" path="website" anchor="setup/information" sectionTitleKey="manager.website.information"}
 
+	{if $pageTitle === 'navigation.infoForReaders.long' && $mastheadPdfUrl}
+		<div class="cmp_notification">
+			<strong>{translate key="manager.setup.mastheadPdfUrl"}:</strong>
+			<a href="{$baseUrl}/pdf-viewer.html?file={$mastheadPdfUrl|escape:'url'}" target="_blank" rel="noopener">
+				{$mastheadPdfUrl|escape}
+			</a>
+		</div>
+	{/if}
+
 	<div class="description">
 		{$content}
 	</div>

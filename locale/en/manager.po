@@ -648,6 +648,12 @@ msgstr "A small logo or representation of the journal that can be used in lists 
 msgid "manager.setup.contextTitle"
 msgstr "Journal title"
 
+msgid "manager.setup.mastheadPdfUrl"
+msgstr "PDF URL"
+
+msgid "manager.setup.mastheadPdfUrl.description"
+msgstr "Upload a PDF. It will be stored under files/pdf/ for this journal."
+
 msgid "manager.setup.keyInfo"
 msgstr "Key Information"
 

@@ -24,7 +24,9 @@ use APP\subscription\IndividualSubscriptionDAO;
 use APP\subscription\InstitutionalSubscriptionDAO;
 use APP\subscription\SubscriptionTypeDAO;
 use PKP\config\Config;
+use PKP\core\Core;
 use PKP\db\DAORegistry;
+use PKP\file\FileManager;
 use PKP\file\TemporaryFileManager;
 use PKP\plugins\Hook;
 use PKP\submission\GenreDAO;
@@ -118,6 +120,14 @@ class ContextService extends \PKP\services\PKPContextService
             }
         }
 
+        if (array_key_exists('mastheadPdfUrl', $params)) {
+            $userId = $request->getUser() ? $request->getUser()->getId() : null;
+            $saved = $this->saveMastheadPdfUrlSetting($currentContext, $params['mastheadPdfUrl'], $userId);
+            if ($saved !== false) {
+                $newContext->setData('mastheadPdfUrl', $saved);
+            }
+        }
+
         // If the context is enabled or disabled, create or delete
         // tombstones for all published submissions
         if ($newContext->getData('enabled') !== $currentContext->getData('enabled')) {
@@ -187,6 +197,12 @@ class ContextService extends \PKP\services\PKPContextService
 
         $publicFileManager = new PublicFileManager();
         $publicFileManager->rmtree($publicFileManager->getContextFilesPath($context->getId()));
+
+        $mastheadPdfDir = $this->getMastheadPdfJournalDir($context->getId());
+        if (is_dir($mastheadPdfDir)) {
+            $fileManager = new FileManager();
+            $fileManager->rmtree($mastheadPdfDir);
+        }
     }
 
     /**
@@ -205,15 +221,10 @@ class ContextService extends \PKP\services\PKPContextService
         $props = $args[2];
         $allowedLocales = $args[3];
 
-        if (!isset($props['journalThumbnail'])) {
-            return;
-        }
-
-        // If a journal thumbnail is passed, check that the temporary file exists
-        // and the current user owns it
         $user = Application::get()->getRequest()->getUser();
         $userId = $user ? $user->getId() : null;
         $temporaryFileManager = new TemporaryFileManager();
+
         if (isset($props['journalThumbnail']) && empty($errors['journalThumbnail'])) {
             foreach ($allowedLocales as $localeKey) {
                 if (empty($props['journalThumbnail'][$localeKey]) || empty($props['journalThumbnail'][$localeKey]['temporaryFileId'])) {
@@ -227,5 +238,146 @@ class ContextService extends \PKP\services\PKPContextService
                 }
             }
         }
+
+        if (isset($props['mastheadPdfUrl']) && empty($errors['mastheadPdfUrl'])) {
+            if (!empty($props['mastheadPdfUrl']['temporaryFileId'])
+                    && !$temporaryFileManager->getFile((int) $props['mastheadPdfUrl']['temporaryFileId'], $userId)) {
+                $errors['mastheadPdfUrl'] = [__('common.noTemporaryFile')];
+            }
+        }
+    }
+
+    /**
+     * Persist masthead PDF upload under files/pdf/{contextId}/ and return value for context setting.
+     *
+     * @param \PKP\context\Context $context Context before this edit (for prior file cleanup)
+     * @param mixed $value Payload from API (null, array, or legacy string)
+     * @param ?int $userId
+     *
+     * @return array|null|false New setting value, null if cleared, false on failure
+     */
+    protected function saveMastheadPdfUrlSetting($context, $value, $userId)
+    {
+        if ($value === null) {
+            $this->removeMastheadPdfFileIfOwned($context->getData('mastheadPdfUrl'), $context->getId());
+
+            return null;
+        }
+
+        if (is_string($value)) {
+            if ($value === '') {
+                $this->removeMastheadPdfFileIfOwned($context->getData('mastheadPdfUrl'), $context->getId());
+
+                return null;
+            }
+
+            return [
+                'name' => basename($value),
+                'uploadName' => str_replace('\\', '/', $value),
+                'dateUploaded' => Core::getCurrentDate(),
+            ];
+        }
+
+        if (!is_array($value)) {
+            return false;
+        }
+
+        if (empty($value['temporaryFileId'])) {
+            if (empty($value['uploadName'])) {
+                $this->removeMastheadPdfFileIfOwned($context->getData('mastheadPdfUrl'), $context->getId());
+
+                return null;
+            }
+
+            return [
+                'name' => $value['name'] ?? basename((string) $value['uploadName']),
+                'uploadName' => str_replace('\\', '/', (string) $value['uploadName']),
+                'dateUploaded' => $value['dateUploaded'] ?? Core::getCurrentDate(),
+            ];
+        }
+
+        $temporaryFileManager = new TemporaryFileManager();
+        $temporaryFile = $temporaryFileManager->getFile((int) $value['temporaryFileId'], $userId);
+        if (!$temporaryFile) {
+            return false;
+        }
+
+        $publicFileManager = new PublicFileManager();
+        $ext = strtolower((string) $publicFileManager->getDocumentExtension($temporaryFile->getFileType()));
+        $originalName = $temporaryFile->getOriginalFileName();
+        if ($ext !== '.pdf' && !preg_match('/\.pdf$/i', (string) $originalName)) {
+            return false;
+        }
+
+        $baseDir = $this->getMastheadPdfBaseDir();
+        $fileManager = new FileManager();
+        $fileManager->mkdirtree($baseDir);
+
+        $journalDir = $this->getMastheadPdfJournalDir($context->getId());
+        $fileManager->mkdirtree($journalDir);
+
+        $originalBase = pathinfo((string) $originalName, PATHINFO_FILENAME);
+        $safeBase = Core::cleanFileVar($originalBase) ?: 'masthead';
+        $relativePath = $context->getId() . '/masthead-' . date('YmdHis') . '-' . $safeBase . '.pdf';
+        $destination = $baseDir . '/' . $relativePath;
+
+        if (!copy($temporaryFile->getFilePath(), $destination)) {
+            return false;
+        }
+
+        $temporaryFileManager->deleteById($temporaryFile->getId(), $userId);
+
+        $this->removeMastheadPdfFileIfOwned($context->getData('mastheadPdfUrl'), $context->getId());
+
+        return [
+            'name' => $originalName,
+            'uploadName' => $relativePath,
+            'dateUploaded' => Core::getCurrentDate(),
+        ];
+    }
+
+    protected function getMastheadPdfBaseDir(): string
+    {
+        return Core::getBaseDir() . '/files/pdf';
+    }
+
+    protected function getMastheadPdfJournalDir(int $contextId): string
+    {
+        return $this->getMastheadPdfBaseDir() . '/' . $contextId;
+    }
+
+    protected function removeMastheadPdfFileIfOwned($settingValue, int $contextId): void
+    {
+        $relative = $this->getMastheadPdfRelativePathFromSetting($settingValue);
+        if (!$relative || !str_starts_with($relative, $contextId . '/')) {
+            return;
+        }
+        $full = $this->getMastheadPdfBaseDir() . '/' . $relative;
+        if (is_file($full)) {
+            $fileManager = new FileManager();
+            $fileManager->deleteByPath($full);
+        }
+    }
+
+    protected function getMastheadPdfRelativePathFromSetting($settingValue): ?string
+    {
+        if (is_string($settingValue) && $settingValue !== '') {
+            $normalized = str_replace('\\', '/', $settingValue);
+            if (str_contains($normalized, '..')) {
+                return null;
+            }
+
+            return ltrim($normalized, '/');
+        }
+        if (is_array($settingValue) && !empty($settingValue['uploadName'])) {
+            $normalized = str_replace('\\', '/', (string) $settingValue['uploadName']);
+            if (str_contains($normalized, '..')) {
+                return null;
+            }
+
+            return ltrim($normalized, '/');
+        }
+
+        return null;
     }
 }

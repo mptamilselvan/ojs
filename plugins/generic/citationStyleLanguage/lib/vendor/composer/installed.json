@@ -209,6 +209,6 @@
             "install-path": "../seboettg/collection"
         }
     ],
-    "dev": false,
+    "dev": true,
     "dev-package-names": []
 }
