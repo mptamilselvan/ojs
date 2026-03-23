@@ -50,9 +50,7 @@
 					"in:publication,representation,issue"
 				]
 			},
-			"default": [
-				"publication"
-			]
+		  	"default": ["publication"]
 		},
 		"doiCreationTime": {
 			"type": "string",
@@ -393,9 +391,9 @@
 			]
 		},
 		"doiVersioning": {
-			"type": "boolean",
-			"default": false,
-			"description": "Whether each publication version should receive a unique DOI"
+		  	"type": "boolean",
+		  	"default": false,
+		  	"description": "Whether each publication version should receive a unique DOI"
 		}
 	}
 }

@@ -41,6 +41,7 @@ use PKP\mail\Mailable;
 use PKP\security\authorization\ContextAccessPolicy;
 use PKP\security\Role;
 use PKP\site\VersionCheck;
+use PKP\template\PKPTemplateManager;
 
 class ManagementHandler extends Handler
 {
@@ -137,6 +138,15 @@ class ManagementHandler extends Handler
         $contactForm = new \PKP\components\forms\context\PKPContactForm($apiUrl, $locales, $context);
         $temporaryFileApiUrl = $this->getTemporaryFileApiUrl($context);
         $mastheadForm = new \APP\components\forms\context\MastheadForm($apiUrl, $locales, $context, $publicFileApiUrl, $temporaryFileApiUrl);
+
+        $templateMgr->addJavaScript(
+            'mastheadPdfLocalPreview',
+            $request->getBaseUrl() . '/js/masthead-pdf-preview.js',
+            [
+                'priority' => PKPTemplateManager::STYLE_SEQUENCE_LAST + 1,
+                'contexts' => ['backend'],
+            ]
+        );
 
         $templateMgr->setState([
             'components' => [

@@ -26,7 +26,7 @@ class MastheadForm extends PKPMastheadForm
      * @param array $locales Supported locales
      * @param \PKP\context\Context $context Journal or Press to change settings for
      * @param string $imageUploadUrl The API endpoint for images uploaded through the rich text field
-     * @param string $temporaryFileApiUrl URL to upload temporary files (PDF masthead)
+     * @param string $temporaryFileApiUrl URL to upload temporary files (journal PDF)
      */
     public function __construct($action, $locales, $context, $imageUploadUrl, $temporaryFileApiUrl)
     {

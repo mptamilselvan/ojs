@@ -24,18 +24,19 @@
 
 	{call_hook name="Templates::Index::journal"}
 
+	{if $mastheadPdfPath}
+		<section class="homepage_masthead_pdf">
+			<p>
+				<a href="{$baseUrl}/pdf-viewer.html?file={$mastheadPdfPath|escape:'url'}" target="_blank" rel="noopener noreferrer">
+					PDF: {$mastheadPdfName|default:$mastheadPdfPath|escape}
+				</a>
+			</p>
+		</section>
+	{/if}
+
 	{if $homepageImage}
 		<div class="homepage-image">
 			<img class="img-responsive" src="{$publicFilesDir}/{$homepageImage.uploadName|escape:"url"}" alt="{$homepageImageAltText|escape}">
-		</div>
-	{/if}
-
-	{if $mastheadPdfPath}
-		<div class="cmp_notification">
-			<strong>{translate key="manager.setup.mastheadPdfUrl"}:</strong>
-			<a href="{$baseUrl}/pdf-viewer.html?file={$mastheadPdfPath|escape:'url'}" target="_blank" rel="noopener">
-				{$mastheadPdfPath|escape}
-			</a>
 		</div>
 	{/if}
 
@@ -92,12 +93,13 @@
 	{/if}
 
 	{if $mastheadPdfPath}
-		<div class="cmp_notification">
-			<strong>{translate key="manager.setup.mastheadPdfUrl"}:</strong>
-			<a href="{$baseUrl}/pdf-viewer.html?file={$mastheadPdfPath|escape:'url'}" target="_blank" rel="noopener">
-				{$mastheadPdfPath|escape}
-			</a>
-		</div>
+		<section class="homepage_masthead_pdf homepage_masthead_pdf--footer">
+			<p>
+				<a href="{$baseUrl}/pdf-viewer.html?file={$mastheadPdfPath|escape:'url'}" target="_blank" rel="noopener noreferrer">
+					PDF: {$mastheadPdfName|default:$mastheadPdfPath|escape}
+				</a>
+			</p>
+		</section>
 	{/if}
 </div><!-- .page -->
 

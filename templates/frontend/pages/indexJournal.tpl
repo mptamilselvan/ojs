@@ -22,23 +22,20 @@
 
 	{call_hook name="Templates::Index::journal"}
 
-	{if !$activeTheme->getOption('useHomepageImageAsHeader') && $homepageImage}
+	{if $mastheadPdfPath}
+		<section class="homepage_masthead_pdf">
+			<p><a href="{$baseUrl}/pdf-viewer.html?file={$mastheadPdfPath|escape:'url'}" target="_blank" rel="noopener noreferrer">PDF: {$mastheadPdfName|default:$mastheadPdfPath|escape}</a></p>
+		</section>
+	{/if}
+
+	{if $activeTheme && !$activeTheme->getOption('useHomepageImageAsHeader') && $homepageImage}
 		<div class="homepage_image">
 			<img src="{$publicFilesDir}/{$homepageImage.uploadName|escape:"url"}"{if $homepageImage.altText} alt="{$homepageImage.altText|escape}"{/if}>
 		</div>
 	{/if}
 
-	{if $mastheadPdfPath}
-		<section class="homepage_about">
-			<h2>{translate key="manager.setup.mastheadPdfUrl"}</h2>
-			<a href="{$baseUrl}/pdf-viewer.html?file={$mastheadPdfPath|escape:'url'}" target="_blank" rel="noopener">
-				{$mastheadPdfPath|escape}
-			</a>
-		</section>
-	{/if}
-
 	{* Journal Description *}
-	{if $activeTheme->getOption('showDescriptionInJournalIndex')}
+	{if $activeTheme && $activeTheme->getOption('showDescriptionInJournalIndex')}
 		<section class="homepage_about">
 			<a id="homepageAbout"></a>
 			<h2>{translate key="about.aboutContext"}</h2>
@@ -73,11 +70,8 @@
 	{/if}
 
 	{if $mastheadPdfPath}
-		<section class="homepage_about">
-			<h2>{translate key="manager.setup.mastheadPdfUrl"}</h2>
-			<a href="{$baseUrl}/pdf-viewer.html?file={$mastheadPdfPath|escape:'url'}" target="_blank" rel="noopener">
-				{$mastheadPdfPath|escape}
-			</a>
+		<section class="homepage_masthead_pdf homepage_masthead_pdf--footer">
+			<p><a href="{$baseUrl}/pdf-viewer.html?file={$mastheadPdfPath|escape:'url'}" target="_blank" rel="noopener noreferrer">PDF: {$mastheadPdfName|default:$mastheadPdfPath|escape}</a></p>
 		</section>
 	{/if}
 </div><!-- .page -->

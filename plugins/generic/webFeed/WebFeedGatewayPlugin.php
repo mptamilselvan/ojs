@@ -25,7 +25,10 @@ use APP\template\TemplateManager;
 use Exception;
 use PKP\category\Category;
 use PKP\core\Registry;
+use PKP\facades\Locale;
+use PKP\i18n\LocaleConversion;
 use PKP\plugins\GatewayPlugin;
+use PKP\userGroup\UserGroup;
 
 class WebFeedGatewayPlugin extends GatewayPlugin
 {
@@ -93,7 +96,7 @@ class WebFeedGatewayPlugin extends GatewayPlugin
         $submissions = $submissions->getMany();
         $latestDate ??= $submissions->first()?->getData('lastModified');
         $submissions = $submissions->map(fn (Submission $submission) => ['submission' => $submission, 'identifiers' => $this->getIdentifiers($submission)]);
-        $userGroups = Repo::userGroup()->getCollector()->filterByContextIds([$context->getId()])->getMany();
+        $userGroups = UserGroup::withContextIds([$context->getId()])->get();
 
         $applicationIdentifier = strtolower(preg_replace('/[^a-z]/i', '', Application::getName()));
         TemplateManager::getManager($request)
@@ -116,6 +119,11 @@ class WebFeedGatewayPlugin extends GatewayPlugin
                         'omp' => 'book',
                         'ops' => 'view'
                     },
+                    'publisher' => match ($applicationIdentifier) {
+                        'ojs' => $context->getData('publisherInstitution'),
+                        'omp' => $context->getData('publisher'),
+                        'ops' => $context->getData('name'),
+                    },
                     'openAccess' => match ($applicationIdentifier) {
                         'ojs' => Submission::ARTICLE_ACCESS_OPEN,
                         'omp' => null,
@@ -126,10 +134,12 @@ class WebFeedGatewayPlugin extends GatewayPlugin
                     'latestDate' => $latestDate,
                     'feedUrl' => $request->getRequestUrl(),
                     'userGroups' => $userGroups,
-                    'includeIdentifiers' => $includeIdentifiers
+                    'includeIdentifiers' => $includeIdentifiers,
+                    'language' => LocaleConversion::toBcp47(Locale::getLocale()),
                 ]
             )
             ->setHeaders(['content-type: ' . static::FEED_MIME_TYPE[$feedType] . '; charset=utf-8'])
+            ->registerPlugin('modifier', 'implode', 'implode')
             ->display($this->parentPlugin->getTemplateResource("{$feedType}.tpl"));
 
         return true;
@@ -138,7 +148,7 @@ class WebFeedGatewayPlugin extends GatewayPlugin
     /**
      * Retrieves the identifiers assigned to a submission
      *
-     * @return array<array{'type':string,'label':string,'values':string[]}>
+     * @return array<array{type: string, label: string, values: string[]}>
      */
     private function getIdentifiers(Submission $submission): array
     {

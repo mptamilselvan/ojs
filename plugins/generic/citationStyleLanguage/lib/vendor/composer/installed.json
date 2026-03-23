@@ -39,7 +39,7 @@
             },
             "time": "2022-08-04T09:53:51+00:00",
             "type": "library",
-            "installation-source": "dist",
+            "installation-source": "source",
             "autoload": {
                 "psr-4": {
                     "MyCLabs\\Enum\\": "src/"
@@ -114,7 +114,7 @@
             },
             "time": "2023-02-08T21:13:17+00:00",
             "type": "library",
-            "installation-source": "dist",
+            "installation-source": "source",
             "autoload": {
                 "files": [
                     "src/functions.php"
@@ -166,7 +166,7 @@
             },
             "time": "2022-07-09T19:47:27+00:00",
             "type": "library",
-            "installation-source": "dist",
+            "installation-source": "source",
             "autoload": {
                 "files": [
                     "src/ArrayList/Functions.php"
@@ -209,6 +209,6 @@
             "install-path": "../seboettg/collection"
         }
     ],
-    "dev": true,
+    "dev": false,
     "dev-package-names": []
 }

@@ -645,14 +645,17 @@ msgstr "Journal thumbnail"
 msgid "manager.setup.journalThumbnail.description"
 msgstr "A small logo or representation of the journal that can be used in lists of journals."
 
-msgid "manager.setup.contextTitle"
-msgstr "Journal title"
-
 msgid "manager.setup.mastheadPdfUrl"
-msgstr "PDF URL"
+msgstr "Journal PDF"
 
 msgid "manager.setup.mastheadPdfUrl.description"
-msgstr "Upload a PDF. It will be stored under files/pdf/ for this journal."
+msgstr "Upload a PDF for this journal. It is stored on the server under files/pdf/ in a folder named with this journal's numeric ID. After saving, a link appears at the top and bottom of the journal home page."
+
+msgid "manager.setup.mastheadPdfUrl.view"
+msgstr "View PDF"
+
+msgid "manager.setup.contextTitle"
+msgstr "Journal title"
 
 msgid "manager.setup.keyInfo"
 msgstr "Key Information"

@@ -77,14 +77,6 @@ class InformationHandler extends Handler
         $templateMgr = TemplateManager::getManager($request);
         $templateMgr->assign('pageTitle', $pageTitle);
         $templateMgr->assign('content', $content);
-        $mastheadPdf = $journal->getData('mastheadPdfUrl');
-        $mastheadPdfPath = '';
-        if ($mastheadPdf) {
-            $mastheadPdfPath = is_array($mastheadPdf)
-                ? (string) ($mastheadPdf['uploadName'] ?? '')
-                : (string) $mastheadPdf;
-        }
-        $templateMgr->assign('mastheadPdfPath', $mastheadPdfPath);
         $templateMgr->display('frontend/pages/information.tpl');
     }
 

@@ -3,23 +3,25 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-11-19T11:05:33+00:00\n"
-"PO-Revision-Date: 2019-12-28 17:34+0000\n"
-"Last-Translator: Lucia Steele <lucia.steele@aboutscience.eu>\n"
-"Language-Team: Italian <http://translate.pkp.sfu.ca/projects/ojs/"
-"generic-webFeed/it/>\n"
-"Language: it_IT\n"
+"PO-Revision-Date: 2025-03-07 13:22+0000\n"
+"Last-Translator: Martin Brändle <martin.braendle@uzh.ch>\n"
+"Language-Team: Italian <http://translate.pkp.sfu.ca/projects/plugins/webFeed/"
+"it/>\n"
+"Language: it\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 3.9.1\n"
+"X-Generator: Weblate 4.18.2\n"
 
 msgid "plugins.generic.webfeed.displayName"
 msgstr "Feed della rivista"
 
-#, fuzzy
 msgid "plugins.generic.webfeed.description"
-msgstr "Questo plugin genera il feed RSS/Atom per il fascicolo corrente."
+msgstr ""
+"Questo plugin produce feed RSS/Atom per la syndication web.<br>Il plugin "
+"include anche un blocco per la barra laterale che consente di visualizzare i "
+"link ai feed nella barra laterale dell'applicazione"
 
 msgid "plugins.generic.webfeed.settings"
 msgstr "Impostazioni"
@@ -27,24 +29,20 @@ msgstr "Impostazioni"
 msgid "plugins.generic.webfeed.settings.issue"
 msgstr "Mostra il link ai feed solo sulle pagine dell'articolo."
 
-#, fuzzy
 msgid "plugins.generic.webfeed.settings.homepage"
-msgstr "Mostra il link ai feed sulla home page e sulle pagine dei fascicoli."
+msgstr "Visualizzare i link ai feed web solo sulla homepage."
 
-#, fuzzy
 msgid "plugins.generic.webfeed.settings.all"
-msgstr "Mostra il link ai feed su tutte le pagine della rivista."
+msgstr "Visualizzare i link ai feed web su tutte le pagine dell'applicazione."
 
 msgid "plugins.generic.webfeed.settings.currentIssue"
 msgstr "Mostra gli articoli pubblicati nell'ultima uscita."
 
-#, fuzzy
 msgid "plugins.generic.webfeed.settings.recent"
-msgstr "Mostra un numero fisso degli articoli più recenti."
+msgstr "Visualizza un numero fisso di pubblicazioni più recenti."
 
-#, fuzzy
 msgid "plugins.generic.webfeed.settings.recentArticles"
-msgstr "Numero di articoli da visualizzare"
+msgstr "Numero di pubblicazioni da visualizzare"
 
 msgid "plugins.generic.webfeed.settings.recentItemsRequired"
 msgstr ""
@@ -58,3 +56,16 @@ msgstr "Logo RSS1"
 
 msgid "plugins.generic.webfeed.rss2.altText"
 msgstr "Logo RSS2"
+
+msgid "plugins.generic.webfeed.blockTitle"
+msgstr "Pubblicazioni più recenti"
+
+msgid "plugins.generic.webfeed.settings.homepageAndIssues"
+msgstr ""
+"Visualizzare i link ai feed web solo sulla homepage e sulle pagine dei "
+"numeri."
+
+msgid "plugins.generic.webfeed.settings.includeIdentifiers"
+msgstr ""
+"Includere gli identificatori (ISBN, parole chiave, categorie, ecc.) nel "
+"sommario del feed?"

@@ -25,9 +25,7 @@
 		<description>{$description|strip|escape:"html"}</description>
 
 		{* optional elements *}
-		{if $context->getPrimaryLocale()}
-			<language>{$context->getPrimaryLocale()|replace:'_':'-'|strip|escape:"html"}</language>
-		{/if}
+		<language>{$language|escape}</language>
 
 		{if $context->getLocalizedData('licenseTerms')}
 			<copyright>{$context->getLocalizedData('licenseTerms')|strip|escape:"html"}</copyright>
@@ -57,7 +55,7 @@
 			<item>
 				{* required elements *}
 				<title>{$publication->getLocalizedTitle()|strip|escape:"html"}</title>
-				<link>{url page=$publicationPage op=$publicationOp path=$submission->getBestId()}</link>
+				<link>{url page=$publicationPage op=$publicationOp path=$publication->getData('urlPath')|default:$submission->getId()}</link>
 				{if $publication->getLocalizedData('abstract') || $includeIdentifiers}
 					<description>
 						{if $includeIdentifiers}
@@ -89,7 +87,7 @@
 					{$publication->getData('licenseUrl')|escape}
 				</dc:rights>
 				<cc:license {if ($openAccess === null || $openAccess === $publication->getData('accessStatus')) && $publication->isCCLicense()}rdf:resource="{$publication->getData('licenseUrl')|escape}"{/if} />
-				<guid isPermaLink="true">{url page=$publicationPage op=$publicationOp path=$submission->getBestId()}</guid>
+				<guid isPermaLink="true">{url page=$publicationPage op=$publicationOp path=$publication->getData('urlPath')|default:$submission->getId()}</guid>
 				<pubDate>{$publication->getData('datePublished')|date_format:$smarty.const.DATE_RSS}</pubDate>
 			</item>
 		{/foreach}{* articles *}

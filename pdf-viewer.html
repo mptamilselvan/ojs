@@ -54,13 +54,16 @@
       text-overflow: ellipsis;
     }
 
-    .btn {
-      text-decoration: none;
-      color: #07111f;
-      background: var(--accent);
-      border-radius: 8px;
-      padding: 10px 14px;
+    .download-link {
+      text-decoration: underline;
+      color: var(--accent);
       font-weight: 600;
+      padding: 4px 2px;
+    }
+
+    .download-link:hover,
+    .download-link:focus {
+      color: #93c5fd;
     }
 
     .error {
@@ -78,7 +81,7 @@
   <iframe id="viewer" title="PDF document"></iframe>
   <div class="footer">
     <span id="fileName" class="file-name"></span>
-    <a id="downloadLink" class="btn" href="#" download>Download</a>
+    <a id="downloadLink" class="download-link" href="#" download>Download PDF</a>
   </div>
 
   <script>
@@ -106,7 +109,6 @@
       var decoded = decodeURIComponent(file).trim();
       var normalized = decoded.replace(/\\/g, "/").replace(/^\/+/, "");
 
-      // Allow nested folders inside files/pdf, but block traversal and URLs.
       if (
         !normalized ||
         /^(?:[a-z]+:)?\/\//i.test(normalized) ||

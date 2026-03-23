@@ -18,9 +18,6 @@
 		{/if}
 	</title>
 
-	{* Mixed Content Blocker - Load early to prevent problematic scripts *}
-	<script src="{$baseUrl}/js/block-mixed-content.js"></script>
-
 	{load_header context="frontend"}
 	{load_stylesheet context="frontend"}
 </head>
