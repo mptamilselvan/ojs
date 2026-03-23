@@ -1,0 +1,15 @@
+{
+  "name": "ojs-3.4.0-9",
+  "version": "1.0.0",
+  "description": "[![Build Status](https://app.travis-ci.com/pkp/ojs.svg?branch=main)](https://app.travis-ci.com/pkp/ojs) [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/pkp/ojs/badges/quality-score.png?b=main)](https://scrutinizer-ci.com/g/pkp/ojs/?branch=main)",
+  "main": "cypress.config.js",
+  "directories": {
+    "doc": "docs",
+    "lib": "lib"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC"
+}

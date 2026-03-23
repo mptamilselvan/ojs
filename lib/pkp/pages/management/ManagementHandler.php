@@ -135,7 +135,8 @@ class ManagementHandler extends Handler
         $locales = $this->getSupportedFormLocales($context);
 
         $contactForm = new \PKP\components\forms\context\PKPContactForm($apiUrl, $locales, $context);
-        $mastheadForm = new \APP\components\forms\context\MastheadForm($apiUrl, $locales, $context, $publicFileApiUrl);
+        $temporaryFileApiUrl = $this->getTemporaryFileApiUrl($context);
+        $mastheadForm = new \APP\components\forms\context\MastheadForm($apiUrl, $locales, $context, $publicFileApiUrl, $temporaryFileApiUrl);
 
         $templateMgr->setState([
             'components' => [

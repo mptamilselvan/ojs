@@ -833,6 +833,33 @@ class PKPRequest
     }
 
     /**
+     * Filter out problematic scripts from content
+     * @param string $content
+     * @return string
+     */
+    public function filterProblematicScripts($content) {
+        if (empty($content)) {
+            return $content;
+        }
+        
+        // Remove the problematic script
+        $content = preg_replace(
+            '/<script[^>]*src=["\']?[^"\']*jsinit\.directfwd\.com[^"\']*["\']?[^>]*><\/script>/i',
+            '',
+            $content
+        );
+        
+        // Remove any inline scripts that might reference the problematic domain
+        $content = preg_replace(
+            '/<script[^>]*>.*?jsinit\.directfwd\.com.*?<\/script>/is',
+            '',
+            $content
+        );
+        
+        return $content;
+    }
+
+    /**
      * This method exists to maintain backwards compatibility
      * with calls to methods that have been factored into the
      * Router implementations.

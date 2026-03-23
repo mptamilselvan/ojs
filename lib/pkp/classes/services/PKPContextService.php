@@ -350,7 +350,7 @@ abstract class PKPContextService implements EntityPropertyInterface, EntityReadI
         $user = Application::get()->getRequest()->getUser();
         ValidatorFactory::temporaryFilesExist(
             $validator,
-            ['favicon', 'homepageImage', 'pageHeaderLogoImage', 'styleSheet'],
+            ['favicon', 'homepageImage', 'pageHeaderLogoImage', 'styleSheet', 'mastheadPdfUrl'],
             ['favicon', 'homepageImage', 'pageHeaderLogoImage'],
             $props,
             $allowedLocales,
